@@ -1,32 +1,10 @@
 body {
-    font-family: Arial, sans-serif;
-    background-color: #87CEEB; /* Sky blue */
     margin: 0;
     overflow: hidden;
+    background-color: #87CEEB; /* Sky blue */
 }
 
-#gameArea {
-    position: relative;
-    width: 100%;
-    height: 100vh;
-    overflow: hidden;
-}
-
-#basket {
-    position: absolute;
-    bottom: 20px;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 100px;
-    height: 50px;
-    background-color: #8B4513; /* Brown */
-    border-radius: 10px;
-}
-
-.apple {
-    position: absolute;
-    width: 40px;
-    height: 40px;
-    background-image: url('https://img.icons8.com/color/48/000000/apple.png'); /* Apple icon */
-    background-size: cover;
+canvas {
+    display: block;
+    background-color: #228B22; /* Grass color */
 }
