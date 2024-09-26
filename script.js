@@ -1,49 +1,61 @@
-const gameArea = document.getElementById('gameArea');
-const basket = document.getElementById('basket');
-const scoreDisplay = document.getElementById('score');
-let score = 0;
-let basketPosition = 50; // Start position of the basket
+const canvas = document.getElementById('gameCanvas');
+const ctx = canvas.getContext('2d');
 
-// Function to move the basket
-document.addEventListener('mousemove', (e) => {
-    const x = e.clientX;
-    const gameAreaRect = gameArea.getBoundingClientRect();
-    basketPosition = ((x - gameAreaRect.left) / gameAreaRect.width) * 100;
-    basket.style.left = `${basketPosition}%`;
-});
+// Set canvas size
+canvas.width = window.innerWidth;
+canvas.height = window.innerHeight;
 
-// Function to create falling apples
-function createApple() {
-    const apple = document.createElement('div');
-    apple.classList.add('apple');
-    apple.style.left = `${Math.random() * 100}vw`; // Random horizontal position
-    gameArea.appendChild(apple);
-    
-    // Animate apple falling
-    let appleFallInterval = setInterval(() => {
-        let appleTop = parseFloat(getComputedStyle(apple).top);
-        if (appleTop < window.innerHeight - 40) {
-            apple.style.top = `${appleTop + 5}px`;
-        } else {
-            clearInterval(appleFallInterval);
-            gameArea.removeChild(apple);
-            alert(`Game Over! Your score: ${score}`);
-            location.reload(); // Restart the game
-        }
-        
-        // Check for collision with basket
-        const appleRect = apple.getBoundingClientRect();
-        const basketRect = basket.getBoundingClientRect();
-        if (appleRect.bottom > basketRect.top && 
-            appleRect.right > basketRect.left && 
-            appleRect.left < basketRect.right) {
-            score++;
-            scoreDisplay.textContent = `Score: ${score}`;
-            clearInterval(appleFallInterval);
-            gameArea.removeChild(apple);
-        }
-    }, 100);
+// Block settings
+const blockSize = 40;
+const blocks = [];
+
+// Block types (colors)
+const blockTypes = {
+    grass: '#228B22',
+    dirt: '#8B4513',
+    stone: '#A9A9A9'
+};
+
+// Current block type
+let currentBlock = blockTypes.grass;
+
+// Function to draw blocks
+function drawBlocks() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    for (let block of blocks) {
+        ctx.fillStyle = block.color;
+        ctx.fillRect(block.x, block.y, blockSize, blockSize);
+    }
 }
 
-// Create apples at intervals
-setInterval(createApple, 1000);
+// Function to place a block
+function placeBlock(x, y) {
+    const block = {
+        x: Math.floor(x / blockSize) * blockSize,
+        y: Math.floor(y / blockSize) * blockSize,
+        color: currentBlock
+    };
+    blocks.push(block);
+    drawBlocks();
+}
+
+// Function to handle mouse clicks
+canvas.addEventListener('click', (event) => {
+    const x = event.clientX;
+    const y = event.clientY;
+    placeBlock(x, y);
+});
+
+// Function to change current block type
+document.addEventListener('keydown', (event) => {
+    if (event.key === 'g') {
+        currentBlock = blockTypes.grass;
+    } else if (event.key === 'd') {
+        currentBlock = blockTypes.dirt;
+    } else if (event.key === 's') {
+        currentBlock = blockTypes.stone;
+    }
+});
+
+// Initialize the game
+drawBlocks();
